@@ -37,7 +37,9 @@ GtkWidget *window,
 	  *header, 
 	  *button, 
 	  *image,
-	  *entry; /* Window, Headerbar && Terminal widget */
+	  *entry,
+	  *new_window,
+	  *new_window_label; /* Window, Headerbar && Terminal widget */
 
 GdkPixbuf *icon; /* Icon */
 
@@ -49,6 +51,7 @@ static int currentFontSize;
 
 
 void changefile(GtkWidget *widget);
+void new_window_with_file(GtkWidget *widget);
 
 bool is_exist(char *filename) {
 	struct stat   buffer;   
@@ -221,15 +224,20 @@ void edifor_gui_start(char* arg) {
     icon = create_pixbuf("/usr/share/pixmaps/edifor/edifor_32.png"); /* Edifor icon. */
     image = gtk_image_new_from_file("/usr/share/pixmaps/edifor/edifor_32.png");
     button = gtk_tool_button_new(image, NULL);
+    new_window_label = gtk_label_new("➕");
+    
+    new_window = gtk_tool_button_new(new_window_label, NULL);
     
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);    
     gtk_window_set_icon(GTK_WINDOW(window), icon);	
 
 	g_signal_connect (GTK_ENTRY(entry), "activate", G_CALLBACK(changefile), "button");
-
+	g_signal_connect (GTK_TOOL_BUTTON(new_window), "clicked", G_CALLBACK(new_window_with_file), "button");
+	
     //gtk_button_set_image(GTK_BUTTON (button), image);
     gtk_header_bar_pack_start(GTK_HEADER_BAR(header), button);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), entry);
+    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), new_window);
     
     gtk_window_set_titlebar(GTK_WINDOW(window), header);
     
@@ -293,6 +301,14 @@ void changefile(GtkWidget *widget) {
 	edifor_gui_new_buffer_start(_text);
 }
 
+void new_window_with_file(GtkWidget *widget) {
+	gchar* _text = gtk_entry_get_text(entry);
+	
+	
+	printf("%s\n", _text);
+	
+	edifor_gui_start(_text);
+}
 
 /* Prototype for Handle terminal keypress events. */
 gboolean edifor_gui_on_keypress(GtkWidget *terminal, GdkEventKey *event, 
