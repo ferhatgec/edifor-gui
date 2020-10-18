@@ -161,7 +161,7 @@ void edifor_gui_connect_signals() {
 }
 
 
-void edifor_gui_start() {
+void edifor_gui_start(char* arg) {
     terminal = vte_terminal_new();
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     header = gtk_header_bar_new();
@@ -187,22 +187,41 @@ void edifor_gui_start() {
     /* Start a new shell */
     envp = g_get_environ();
     
-   
-	command = (gchar *[]){"/bin/edifor_exec", "--r", "edifor", NULL }; /* Get SHELL environment. */	
+   	if(arg == NULL) {
+		command = (gchar *[]){"/bin/edifor", NULL }; /* Get SHELL environment. */	
+    	
     	/* Spawn asynchronous terminal */
-	vte_terminal_spawn_async(VTE_TERMINAL(terminal), 
-        	VTE_PTY_DEFAULT, /* VTE_PTY flag */
-        	NULL,		 /* Working Dir */
-        	command, 	 /* Argv */
-        	NULL, 		 /* Environment value */
-        	G_SPAWN_DEFAULT, /* Spawn flag */
-        	NULL,		 /* Child setup function */
-        	NULL,		 /* Child setup data */
-        	NULL,		 /* Child setup data destroy */
-        	-1,		 /* Timeout */
-        	NULL,		 /* Cancellable */
-        	edifor_gui_Callback, /* Async Callback */
-        	NULL);		 /* Callback data */
+		vte_terminal_spawn_async(VTE_TERMINAL(terminal), 
+        		VTE_PTY_DEFAULT, /* VTE_PTY flag */
+        		NULL,		 /* Working Dir */
+        		command, 	 /* Argv */
+        		NULL, 		 /* Environment value */
+        		G_SPAWN_DEFAULT, /* Spawn flag */
+        		NULL,		 /* Child setup function */
+        		NULL,		 /* Child setup data */
+        		NULL,		 /* Child setup data destroy */
+        		-1,		 /* Timeout */
+        		NULL,		 /* Cancellable */
+        		edifor_gui_Callback, /* Async Callback */
+        		NULL);		 /* Callback data */
+    } else {
+    	command = (gchar *[]){"/bin/edifor", arg, NULL}; /* Get SHELL environment. */	
+    	
+    	/* Spawn asynchronous terminal */
+		vte_terminal_spawn_async(VTE_TERMINAL(terminal), 
+        		VTE_PTY_DEFAULT, /* VTE_PTY flag */
+        		NULL,		 /* Working Dir */
+        		command, 	 /* Argv */
+        		NULL, 		 /* Environment value */
+        		G_SPAWN_DEFAULT, /* Spawn flag */
+        		NULL,		 /* Child setup function */
+        		NULL,		 /* Child setup data */
+        		NULL,		 /* Child setup data destroy */
+        		-1,		 /* Timeout */
+        		NULL,		 /* Cancellable */
+        		edifor_gui_Callback, /* Async Callback */
+        		NULL);		 /* Callback data */
+    }
     
     g_strfreev(envp);
 
@@ -268,9 +287,9 @@ int main(int argc, char *argv[]) {
     
     if(argc > 1)
     	input = argv[1];
- 	else input = NULL;
+	else input = NULL;
     
     printf("arg: %s\n", argv[1]);
     
-    edifor_gui_start();
+    edifor_gui_start(argv[1]);
 }
