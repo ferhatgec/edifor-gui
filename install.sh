@@ -11,3 +11,9 @@ sudo sh scripts/install_edifor.sh
 
 echo 4
 sudo sh scripts/install_edifor_gui.sh
+
+sudo mkdir /usr/share/pixmaps/edifor/
+
+sudo cp resource/*.png /usr/share/pixmaps/edifor/
+
+sudo cp edifor.desktop /usr/share/applications/
