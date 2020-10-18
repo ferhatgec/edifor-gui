@@ -34,7 +34,8 @@ GtkWidget *window,
 	  *terminal, 
 	  *header, 
 	  *button, 
-	  *image; /* Window, Headerbar && Terminal widget */
+	  *image,
+	  *entry; /* Window, Headerbar && Terminal widget */
 
 GdkPixbuf *icon; /* Icon */
 
@@ -43,6 +44,9 @@ static gchar **command, **envp;
 
 static PangoFontDescription *fontDesc; /* Description for the terminal font */
 static int currentFontSize;
+
+
+void changefile(GtkWidget *widget);
 
 GdkPixbuf *create_pixbuf(const gchar * filename) {
    GdkPixbuf *pixbuf;
@@ -160,15 +164,18 @@ void edifor_gui_connect_signals() {
                         GTK_WINDOW(window));
 }
 
-
 void edifor_gui_start(char* arg) {
     terminal = vte_terminal_new();
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     header = gtk_header_bar_new();
+	entry = gtk_entry_new();
 	
     gtk_window_set_title(GTK_WINDOW(window), "Fegeya Edifor");
     gtk_window_set_default_size(GTK_WINDOW(window), 805, 460);
     gtk_window_set_resizable (GTK_WINDOW(window), TRUE);
+  	
+  	
+  	gtk_entry_set_width_chars(GTK_ENTRY(entry), 50);
   	
     /* TODO:
     	Add Edifor's logo.
@@ -180,8 +187,12 @@ void edifor_gui_start(char* arg) {
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);    
     gtk_window_set_icon(GTK_WINDOW(window), icon);	
 
+	g_signal_connect (GTK_ENTRY(entry), "activate", G_CALLBACK(changefile), "button");
+
     //gtk_button_set_image(GTK_BUTTON (button), image);
     gtk_header_bar_pack_start(GTK_HEADER_BAR(header), button);
+    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), entry);
+    
     gtk_window_set_titlebar(GTK_WINDOW(window), header);
     
     /* Start a new shell */
@@ -237,6 +248,12 @@ void edifor_gui_start(char* arg) {
     g_object_unref(icon);
     gtk_main();
 }
+
+void changefile(GtkWidget *widget) {
+	gchar* _text = gtk_entry_get_text(entry);
+	edifor_gui_start(_text);
+}
+
 
 /* Prototype for Handle terminal keypress events. */
 gboolean edifor_gui_on_keypress(GtkWidget *terminal, GdkEventKey *event, 
