@@ -5,6 +5,8 @@
 #
 # */
 
+#include <sys/stat.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <vte/vte.h> /* LibVTE */
 #include <gtk/gtk.h> /* GTK */
@@ -47,6 +49,11 @@ static int currentFontSize;
 
 
 void changefile(GtkWidget *widget);
+
+bool is_exist(char *filename) {
+	struct stat   buffer;   
+  	return (stat (filename, &buffer) == 0);
+}
 
 GdkPixbuf *create_pixbuf(const gchar * filename) {
    GdkPixbuf *pixbuf;
@@ -167,27 +174,7 @@ void edifor_gui_connect_signals() {
 void edifor_gui_new_buffer_start(char* arg) {
     //terminal = vte_terminal_new();
     
-    /* Start a new shell */
-    envp = g_get_environ();
-    
-   	if(arg == NULL) {
-		command = (gchar *[]){"/bin/edifor", NULL }; /* Get SHELL environment. */	
-    	
-    	/* Spawn asynchronous terminal */
-		vte_terminal_spawn_async(VTE_TERMINAL(terminal), 
-        		VTE_PTY_DEFAULT, /* VTE_PTY flag */
-        		NULL,		 /* Working Dir */
-        		command, 	 /* Argv */
-        		NULL, 		 /* Environment value */
-        		G_SPAWN_DEFAULT, /* Spawn flag */
-        		NULL,		 /* Child setup function */
-        		NULL,		 /* Child setup data */
-        		NULL,		 /* Child setup data destroy */
-        		-1,		 /* Timeout */
-        		NULL,		 /* Cancellable */
-        		edifor_gui_Callback, /* Async Callback */
-        		NULL);		 /* Callback data */
-    } else {
+    if(is_exist(arg) == true) {
     	command = (gchar *[]){"/bin/edifor", arg, NULL}; /* Get SHELL environment. */	
     	
     	/* Spawn asynchronous terminal */
@@ -204,15 +191,15 @@ void edifor_gui_new_buffer_start(char* arg) {
         		NULL,		 /* Cancellable */
         		edifor_gui_Callback, /* Async Callback */
         		NULL);		 /* Callback data */
-    }
     
-    g_strfreev(envp);
+    	
 
-    /* Connect signals */
-    edifor_gui_connect_signals();
+    	/* Connect signals */
+    	edifor_gui_connect_signals();
     
-    /* Edifor configuration */
-    edifor_gui_configuration();
+    	/* Edifor configuration */
+    	edifor_gui_configuration();
+    }
 }
 
 void edifor_gui_start(char* arg) {
