@@ -1,15 +1,15 @@
 #!/bin/sh
 
-echo 1
+echo "Get source code of edifor. (latest)"
 sh scripts/get_edifor.sh
 
-echo 2
+echo "Install dependencies."
 sudo sh scripts/install_execute.sh
 
-echo 3
+echo "Install edifor. (latest)"
 sudo sh scripts/install_edifor.sh
 
-echo 4
+echo "Install ediforGUI"
 sudo sh scripts/install_edifor_gui.sh
 
 sudo mkdir /usr/share/pixmaps/edifor/

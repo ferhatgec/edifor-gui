@@ -289,6 +289,7 @@ void edifor_gui_start(char* arg) {
 
 void changefile(GtkWidget *widget) {
 	gchar* _text = gtk_entry_get_text(entry);
+	
 	edifor_gui_new_buffer_start(_text);
 }
 
