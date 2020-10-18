@@ -164,6 +164,57 @@ void edifor_gui_connect_signals() {
                         GTK_WINDOW(window));
 }
 
+void edifor_gui_new_buffer_start(char* arg) {
+    //terminal = vte_terminal_new();
+    
+    /* Start a new shell */
+    envp = g_get_environ();
+    
+   	if(arg == NULL) {
+		command = (gchar *[]){"/bin/edifor", NULL }; /* Get SHELL environment. */	
+    	
+    	/* Spawn asynchronous terminal */
+		vte_terminal_spawn_async(VTE_TERMINAL(terminal), 
+        		VTE_PTY_DEFAULT, /* VTE_PTY flag */
+        		NULL,		 /* Working Dir */
+        		command, 	 /* Argv */
+        		NULL, 		 /* Environment value */
+        		G_SPAWN_DEFAULT, /* Spawn flag */
+        		NULL,		 /* Child setup function */
+        		NULL,		 /* Child setup data */
+        		NULL,		 /* Child setup data destroy */
+        		-1,		 /* Timeout */
+        		NULL,		 /* Cancellable */
+        		edifor_gui_Callback, /* Async Callback */
+        		NULL);		 /* Callback data */
+    } else {
+    	command = (gchar *[]){"/bin/edifor", arg, NULL}; /* Get SHELL environment. */	
+    	
+    	/* Spawn asynchronous terminal */
+		vte_terminal_spawn_async(VTE_TERMINAL(terminal), 
+        		VTE_PTY_DEFAULT, /* VTE_PTY flag */
+        		NULL,		 /* Working Dir */
+        		command, 	 /* Argv */
+        		NULL, 		 /* Environment value */
+        		G_SPAWN_DEFAULT, /* Spawn flag */
+        		NULL,		 /* Child setup function */
+        		NULL,		 /* Child setup data */
+        		NULL,		 /* Child setup data destroy */
+        		-1,		 /* Timeout */
+        		NULL,		 /* Cancellable */
+        		edifor_gui_Callback, /* Async Callback */
+        		NULL);		 /* Callback data */
+    }
+    
+    g_strfreev(envp);
+
+    /* Connect signals */
+    edifor_gui_connect_signals();
+    
+    /* Edifor configuration */
+    edifor_gui_configuration();
+}
+
 void edifor_gui_start(char* arg) {
     terminal = vte_terminal_new();
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -251,7 +302,7 @@ void edifor_gui_start(char* arg) {
 
 void changefile(GtkWidget *widget) {
 	gchar* _text = gtk_entry_get_text(entry);
-	edifor_gui_start(_text);
+	edifor_gui_new_buffer_start(_text);
 }
 
 
