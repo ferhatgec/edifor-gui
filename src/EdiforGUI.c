@@ -173,8 +173,8 @@ void edifor_gui_start() {
     /* TODO:
     	Add Edifor's logo.
     */  
-    icon = create_pixbuf("/usr/share/pixmaps/gemini/gemini_32.png"); /* Gemini icon. */
-    image = gtk_image_new_from_file("/usr/share/pixmaps/gemini/gemini_32.png");
+    icon = create_pixbuf("/usr/share/pixmaps/edifor/edifor_32.png"); /* Edifor icon. */
+    image = gtk_image_new_from_file("/usr/share/pixmaps/edifor/edifor_32.png");
     button = gtk_tool_button_new(image, NULL);
     
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);    
