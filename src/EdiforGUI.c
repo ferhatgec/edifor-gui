@@ -53,6 +53,8 @@ static int currentFontSize;
 void changefile(GtkWidget *widget);
 void new_window_with_file(GtkWidget *widget);
 
+void edifor_open_dialog(GtkWidget *widget);
+
 bool is_exist(char *filename) {
 	struct stat   buffer;   
   	return (stat (filename, &buffer) == 0);
@@ -231,8 +233,9 @@ void edifor_gui_start(char* arg) {
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);    
     gtk_window_set_icon(GTK_WINDOW(window), icon);	
 
-	g_signal_connect (GTK_ENTRY(entry), "activate", G_CALLBACK(changefile), "button");
-	g_signal_connect (GTK_TOOL_BUTTON(new_window), "clicked", G_CALLBACK(new_window_with_file), "button");
+	g_signal_connect(GTK_TOOL_BUTTON(button), "clicked", G_CALLBACK(edifor_open_dialog), "button");
+	g_signal_connect(GTK_ENTRY(entry), "activate", G_CALLBACK(changefile), "button");
+	g_signal_connect(GTK_TOOL_BUTTON(new_window), "clicked", G_CALLBACK(new_window_with_file), "button");
 	
     //gtk_button_set_image(GTK_BUTTON (button), image);
     gtk_header_bar_pack_start(GTK_HEADER_BAR(header), button);
@@ -308,6 +311,31 @@ void new_window_with_file(GtkWidget *widget) {
 	printf("%s\n", _text);
 	
 	edifor_gui_start(_text);
+}
+
+
+void edifor_open_dialog(GtkWidget *widget) {
+	GtkWidget *dialog = gtk_file_chooser_dialog_new (("Open"),
+	                                                 GTK_WINDOW(window),
+	                                                 GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                                 GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+	                                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                                 NULL);
+									 
+	switch(gtk_dialog_run(GTK_DIALOG(dialog))) {
+		case GTK_RESPONSE_ACCEPT: {
+			gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+			
+			edifor_gui_new_buffer_start(filename);
+			
+			break;
+		}
+		
+		default:
+			break;
+	}
+	
+	gtk_widget_destroy(dialog);
 }
 
 /* Prototype for Handle terminal keypress events. */
