@@ -327,6 +327,7 @@ void edifor_open_dialog(GtkWidget *widget) {
 			gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 			
 			edifor_gui_new_buffer_start(filename);
+			gtk_entry_set_text(GTK_ENTRY(entry), filename);
 			
 			break;
 		}
