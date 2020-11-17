@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Fegeya Edifor
-Exec=ediforg
+Exec=ediforg %U
 Icon=/usr/share/pixmaps/edifor/edifor.png
 Type=Application
 Categories=GTK;GNOME;TerminalEmulator;Code Editor;
